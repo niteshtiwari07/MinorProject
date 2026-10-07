@@ -12,11 +12,14 @@ function useSafeAuth() {
   return {
     ...auth,
     getToken: async (options) => {
-      try {
-        return await auth.getToken(options);
-      } catch (err) {
-        return null;
+      if (process.env.NEXT_PUBLIC_CLERK_CONVEX_JWT === "true") {
+        try {
+          return await auth.getToken(options);
+        } catch (err) {
+          return null;
+        }
       }
+      return null;
     },
   };
 }
