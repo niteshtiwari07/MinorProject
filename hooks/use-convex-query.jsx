@@ -9,8 +9,12 @@ export const useConvexQuery = (query, ...args) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let timer;
     if (result === undefined) {
       setIsLoading(true);
+      timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1500);
     } else {
       try {
         setData(result);
@@ -22,6 +26,7 @@ export const useConvexQuery = (query, ...args) => {
         setIsLoading(false);
       }
     }
+    return () => clearTimeout(timer);
   }, [result]);
 
   return {
