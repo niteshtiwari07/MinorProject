@@ -1,11 +1,10 @@
 "use client"
 
-import { Show, SignInButton, SignUpButton, useAuth, UserButton } from '@clerk/nextjs'
+import { Show, SignInButton, SignUpButton, useAuth, useUser, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from './ui/button'
-import { Authenticated, Unauthenticated } from 'convex/react'
 import { BarLoader } from 'react-spinners'
 import { useStoreUser } from '@/hooks/use-store-user'
 import { Building, Crown, Plus, Ticket } from 'lucide-react'
@@ -15,10 +14,9 @@ import SearchLocationBar from './search-location-bar'
 import { Badge } from './ui/badge'
 import UpgradeModal from './upgrade-model'
 
-
-
 const Header = () => {
   const { isLoading } = useStoreUser();
+  const { isSignedIn } = useUser();
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
@@ -46,7 +44,6 @@ const Header = () => {
             )}
           </Link>
 
-
           {/* Search &location -large view */}
           <div className="hidden md:flex flex-1 justify-center">
             <SearchLocationBar />
@@ -62,35 +59,36 @@ const Header = () => {
               <Link href="/explore">Explore</Link>
             </Button>
 
-            <Authenticated>
-              <Button size="sm" asChild className="flex gap-2 mr-4">
-                <Link href="/create-event">
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">Create Event</span>
-                </Link>
-              </Button>
+            {isSignedIn ? (
+              <>
+                <Button size="sm" asChild className="flex gap-2 mr-4">
+                  <Link href="/create-event">
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline">Create Event</span>
+                  </Link>
+                </Button>
 
-              <UserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label='My Tickets'
-                    labelIcon={<Ticket size={16} />}
-                    href="/my-tickets"
-                  />
-                  <UserButton.Link
-                    label='My Events'
-                    labelIcon={<Building size={16} />}
-                    href="/my-events"
-                  />
-                  <UserButton.Action label="manageAccount" />
-                </UserButton.MenuItems>
-              </UserButton>
-            </Authenticated>
-            <Unauthenticated>
+                <UserButton>
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label='My Tickets'
+                      labelIcon={<Ticket size={16} />}
+                      href="/my-tickets"
+                    />
+                    <UserButton.Link
+                      label='My Events'
+                      labelIcon={<Building size={16} />}
+                      href="/my-events"
+                    />
+                    <UserButton.Action label="manageAccount" />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </>
+            ) : (
               <SignInButton mode='modal'>
                 <Button size='sm'>Sign In</Button>
               </SignInButton>
-            </Unauthenticated>
+            )}
           </div>
         </div>
 
