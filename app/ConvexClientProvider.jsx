@@ -3,7 +3,7 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://dummy.convex.cloud";
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://happy-animal-123.convex.cloud";
 const convex = new ConvexReactClient(convexUrl);
 
 export function ConvexClientProvider({ children }) {
