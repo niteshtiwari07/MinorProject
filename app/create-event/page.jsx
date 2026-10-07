@@ -39,8 +39,8 @@ export default function CreateEventPage() {
     locationType: "physical",
     venue: "",
     address: "",
-    city: "Bangalore",
-    state: "Karnataka",
+    city: "",
+    state: "",
     country: "India",
     capacity: 50,
     ticketType: "free",
@@ -77,7 +77,7 @@ export default function CreateEventPage() {
         ? new Date(formData.endDate).getTime()
         : startTimestamp + 7200000;
 
-      const res = await createEvent({
+      await createEvent({
         title: formData.title,
         description: formData.description,
         category: formData.category,
@@ -88,8 +88,8 @@ export default function CreateEventPage() {
         locationType: formData.locationType,
         venue: formData.venue || undefined,
         address: formData.address || undefined,
-        city: formData.city,
-        state: formData.state || undefined,
+        city: formData.city || "Bangalore",
+        state: formData.state || "Karnataka",
         country: formData.country,
         capacity: Number(formData.capacity) || 50,
         ticketType: formData.ticketType,
@@ -106,7 +106,7 @@ export default function CreateEventPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-16">
+    <div className="max-w-4xl mx-auto pb-16 pt-4">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Create New Event</h1>
         <p className="text-muted-foreground">
@@ -123,38 +123,40 @@ export default function CreateEventPage() {
               Event Info
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div>
-              <Label htmlFor="title">Event Title *</Label>
+              <Label htmlFor="title" className="mb-2 block font-medium">Event Title *</Label>
               <Input
                 id="title"
                 placeholder="e.g. React 19 Workshop & Meetup"
                 value={formData.title}
                 onChange={(e) => handleChange("title", e.target.value)}
+                className="h-11 px-3.5"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="description">Event Description *</Label>
+              <Label htmlFor="description" className="mb-2 block font-medium">Event Description *</Label>
               <Textarea
                 id="description"
                 placeholder="Provide a detailed description of what attendees can expect..."
                 rows={4}
                 value={formData.description}
                 onChange={(e) => handleChange("description", e.target.value)}
+                className="p-3.5"
                 required
               />
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <Label>Category</Label>
+                <Label className="mb-2 block font-medium">Category</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(val) => handleChange("category", val)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full h-11 px-3.5">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -168,12 +170,13 @@ export default function CreateEventPage() {
               </div>
 
               <div>
-                <Label htmlFor="tags">Tags (comma-separated)</Label>
+                <Label htmlFor="tags" className="mb-2 block font-medium">Tags (comma-separated)</Label>
                 <Input
                   id="tags"
-                  placeholder="react, tech, coding"
+                  placeholder="tech, coding"
                   value={formData.tags}
                   onChange={(e) => handleChange("tags", e.target.value)}
+                  className="h-11 px-3.5"
                 />
               </div>
             </div>
@@ -188,23 +191,25 @@ export default function CreateEventPage() {
               Date & Time
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid sm:grid-cols-2 gap-4">
+          <CardContent className="grid sm:grid-cols-2 gap-6">
             <div>
-              <Label htmlFor="startDate">Start Date & Time</Label>
+              <Label htmlFor="startDate" className="mb-2 block font-medium">Start Date & Time *</Label>
               <Input
                 id="startDate"
                 type="datetime-local"
                 value={formData.startDate}
                 onChange={(e) => handleChange("startDate", e.target.value)}
+                className="h-11 px-3.5 text-sm [color-scheme:dark] bg-background/50 cursor-pointer"
               />
             </div>
             <div>
-              <Label htmlFor="endDate">End Date & Time</Label>
+              <Label htmlFor="endDate" className="mb-2 block font-medium">End Date & Time *</Label>
               <Input
                 id="endDate"
                 type="datetime-local"
                 value={formData.endDate}
                 onChange={(e) => handleChange("endDate", e.target.value)}
+                className="h-11 px-3.5 text-sm [color-scheme:dark] bg-background/50 cursor-pointer"
               />
             </div>
           </CardContent>
@@ -218,10 +223,10 @@ export default function CreateEventPage() {
               Location Details
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
+          <CardContent className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <Label>State</Label>
+                <Label className="mb-2 block font-medium">State</Label>
                 <Select
                   value={formData.state}
                   onValueChange={(val) => {
@@ -229,7 +234,7 @@ export default function CreateEventPage() {
                     handleChange("city", "");
                   }}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full h-11 px-3.5">
                     <SelectValue placeholder="Select State" />
                   </SelectTrigger>
                   <SelectContent>
@@ -243,13 +248,14 @@ export default function CreateEventPage() {
               </div>
 
               <div>
-                <Label>City</Label>
+                <Label className="mb-2 block font-medium">City</Label>
                 <Select
                   value={formData.city}
                   onValueChange={(val) => handleChange("city", val)}
+                  disabled={!formData.state}
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select City" />
+                  <SelectTrigger className="w-full h-11 px-3.5">
+                    <SelectValue placeholder={formData.state ? "Select City" : "Select State First"} />
                   </SelectTrigger>
                   <SelectContent>
                     {cities.map((c) => (
@@ -263,12 +269,13 @@ export default function CreateEventPage() {
             </div>
 
             <div>
-              <Label htmlFor="address">Venue Address / Online Link</Label>
+              <Label htmlFor="address" className="mb-2 block font-medium">Venue Address / Online Link</Label>
               <Input
                 id="address"
                 placeholder="e.g. WeWork Embassy Golf Links, Bangalore"
                 value={formData.address}
                 onChange={(e) => handleChange("address", e.target.value)}
+                className="h-11 px-3.5"
               />
             </div>
           </CardContent>
@@ -282,24 +289,25 @@ export default function CreateEventPage() {
               Tickets & Capacity
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid sm:grid-cols-3 gap-4">
+          <CardContent className="grid sm:grid-cols-3 gap-6">
             <div>
-              <Label htmlFor="capacity">Capacity (Max attendees)</Label>
+              <Label htmlFor="capacity" className="mb-2 block font-medium">Capacity (Max attendees)</Label>
               <Input
                 id="capacity"
                 type="number"
                 min={1}
                 value={formData.capacity}
                 onChange={(e) => handleChange("capacity", e.target.value)}
+                className="h-11 px-3.5"
               />
             </div>
             <div>
-              <Label>Ticket Type</Label>
+              <Label className="mb-2 block font-medium">Ticket Type</Label>
               <Select
                 value={formData.ticketType}
                 onValueChange={(val) => handleChange("ticketType", val)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full h-11 px-3.5">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -310,13 +318,14 @@ export default function CreateEventPage() {
             </div>
             {formData.ticketType === "paid" && (
               <div>
-                <Label htmlFor="ticketPrice">Ticket Price (₹)</Label>
+                <Label htmlFor="ticketPrice" className="mb-2 block font-medium">Ticket Price (₹)</Label>
                 <Input
                   id="ticketPrice"
                   type="number"
                   min={0}
                   value={formData.ticketPrice}
                   onChange={(e) => handleChange("ticketPrice", e.target.value)}
+                  className="h-11 px-3.5"
                 />
               </div>
             )}
@@ -331,22 +340,23 @@ export default function CreateEventPage() {
               Cover Image & Styling
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid sm:grid-cols-2 gap-4">
+          <CardContent className="grid sm:grid-cols-2 gap-6">
             <div>
-              <Label htmlFor="coverImage">Cover Image URL</Label>
+              <Label htmlFor="coverImage" className="mb-2 block font-medium">Cover Image URL</Label>
               <Input
                 id="coverImage"
                 placeholder="https://images.unsplash.com/..."
                 value={formData.coverImage}
                 onChange={(e) => handleChange("coverImage", e.target.value)}
+                className="h-11 px-3.5"
               />
             </div>
             <div>
-              <Label htmlFor="themeColor">Theme Color</Label>
+              <Label htmlFor="themeColor" className="mb-2 block font-medium">Theme Color</Label>
               <Input
                 id="themeColor"
                 type="color"
-                className="h-10 cursor-pointer p-1"
+                className="h-11 cursor-pointer p-1"
                 value={formData.themeColor}
                 onChange={(e) => handleChange("themeColor", e.target.value)}
               />
@@ -356,13 +366,13 @@ export default function CreateEventPage() {
 
         {/* Actions */}
         <div className="flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={() => router.back()}>
+          <Button variant="outline" type="button" onClick={() => router.back()} className="h-11 px-6">
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white min-w-36"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white min-w-36 h-11 px-6 font-semibold"
           >
             {isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
