@@ -70,7 +70,6 @@ const Header = () => {
                 </Link>
               </Button>
 
-
               <UserButton>
                 <UserButton.MenuItems>
                   <UserButton.Link
