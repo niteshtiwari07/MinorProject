@@ -23,9 +23,14 @@ import {
 
 export default function SearchLocationBar() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: currentUser, isLoading } = useConvexQuery(
     api.users.getCurrentUser
@@ -110,6 +115,29 @@ export default function SearchLocationBar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center">
+        <div className="relative flex w-full">
+          <div className="flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search events..."
+              className="pl-10 w-full h-9 rounded-none rounded-l-md"
+              readOnly
+            />
+          </div>
+        </div>
+        <div className="w-32 h-9 border border-input bg-transparent border-l-0 flex items-center justify-between px-3 text-sm text-muted-foreground">
+          <span>State</span>
+        </div>
+        <div className="w-32 h-9 border border-input bg-transparent rounded-r-md border-l-0 flex items-center justify-between px-3 text-sm text-muted-foreground">
+          <span>City</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center">
